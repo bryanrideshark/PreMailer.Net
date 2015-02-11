@@ -36,11 +36,19 @@ namespace PreMailer.Net
             //When rendering images, we need to prevent breaking the WIDTH and HEIGHT attributes. See PreMailerTests.MoveCssInline_HasStyle_DoesNotBreakImageWidthAttribute().
             //The old code could end up writing an image tag like <img width="206px"> which violates the HTML spec. It should render <img width="206">.
             if (domElement.NodeName == @"IMG"
-                && (name == "width" || name == "height")
-                && value.EndsWith("px"))
+                && (name == "width" || name == "height"))
             {
-                value = value.Replace("px", string.Empty);
+                if (!domElement.GetAttribute(name).Equals(string.Empty))
+                {
+                    value = domElement.GetAttribute(name);
+                }
+                else if (value.EndsWith("px"))
+                {
+                    value = value.Replace("px", string.Empty);
+                }
             }
+
+            
 
             domElement.SetAttribute(name, value);
         }
